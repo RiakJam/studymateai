@@ -1,7 +1,12 @@
-import requests
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-import mysql.connector, hashlib
-import re, logging, random, string
+import psycopg2
+import psycopg2.extras
+import hashlib
+import re
+import logging
+import random
+import string
 from datetime import datetime, timedelta
 import json
 
@@ -10,23 +15,22 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"
+app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
 
 # Paystack configuration (only secret key needed for verification)
-PAYSTACK_SECRET_KEY = "sk_test_34d568ac6ea779fe94bafe563e481b7c163dfcb0"
+PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY", "sk_test_34d568ac6ea779fe94bafe563e481b7c163dfcb0")
 
-# Database configuration
+# Database configuration - using environment variables for Render
 def get_db_connection():
     try:
-        conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="hackerthone_db"
+        database_url = os.environ.get(
+            "DATABASE_URL",
+            "postgresql://hackerthone:w7e1GFpoRpDDzkk42Fk8ucCdXIAkDSFm@dpg-d2o8b1emcj7s73b9qbp0-a.oregon-postgres.render.com:5432/hackerthone_db?sslmode=require"
         )
+        conn = psycopg2.connect(database_url)
         return conn
-    except mysql.connector.Error as err:
-        logger.error(f"Database connection failed: {err}")
+    except psycopg2.Error as err:
+        print(f"Database connection failed: {err}")
         return None
 
 # ---------------- PAYMENT PROCESSOR CLASS ----------------
@@ -190,8 +194,8 @@ class PaymentProcessor:
             
             return success
             
-        except mysql.connector.Error as err:
-            print(f"MySQL Error handling successful payment: {err}")
+        except psycopg2.Error as err:
+            print(f"PostgreSQL Error handling successful payment: {err}")
             return False
         except Exception as e:
             print(f"Error handling successful payment: {e}")
@@ -206,7 +210,7 @@ class PaymentProcessor:
             if conn is None:
                 return None
                 
-            cursor = conn.cursor(dictionary=True)
+            cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             
             query = """
             SELECT id, name, email, plan, plan_duration, amount_paid, plan_start_date, plan_end_date 
@@ -323,7 +327,7 @@ def _generate_definition_question(sentences, full_text):
         return (f"What is the definition of {concept}?", 
                 f"{concept} is a concept mentioned in: {sentence}")
     
-    return _generate_generic_question(sentences, full_text)
+    return _generate_generic_question(sentenses, full_text)
 
 def _generate_comparison_question(sentences, full_text):
     """Generate a comparison question"""
@@ -406,7 +410,7 @@ def signup():
             conn.commit()
             flash("Account created! Please login.","success")
             return redirect(url_for('login'))
-        except mysql.connector.Error as err:
+        except psycopg2.Error as err:
             flash("Email already exists.","danger")
             logger.error(err)
         finally:
@@ -424,7 +428,7 @@ def login():
             flash("Database error.", "danger")
             return render_template("login.html")
 
-        cur = conn.cursor(dictionary=True)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("SELECT * FROM users WHERE email=%s AND password=%s",(email,password))
         user = cur.fetchone()
         conn.close()
@@ -452,43 +456,44 @@ def dashboard():
     conn = get_db_connection()
     cards = []
     total_cards = 0
-    mastered_cards = 0
     
     if conn:
-        cur = conn.cursor(dictionary=True)
-        # Get user's flashcards
-        cur.execute("SELECT * FROM flashcards WHERE user_id=%s ORDER BY created_at DESC", (session['user_id'],))
-        cards = cur.fetchall()
-        
-        # Get total count of flashcards for this user
-        cur.execute("SELECT COUNT(*) as total FROM flashcards WHERE user_id=%s", (session['user_id'],))
-        total_result = cur.fetchone()
-        total_cards = total_result['total'] if total_result else 0
-        
-        # Get mastered cards count (if mastered column exists)
         try:
-            cur.execute("SELECT COUNT(*) as mastered FROM flashcards WHERE user_id=%s AND mastered=1", (session['user_id'],))
-            mastered_result = cur.fetchone()
-            mastered_cards = mastered_result['mastered'] if mastered_result else 0
-        except:
-            mastered_cards = 0
+            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             
-        # Get user's current plan from database
-        cur.execute("SELECT plan, plan_duration, amount_paid, plan_start_date, plan_end_date FROM users WHERE id=%s", (session['user_id'],))
-        user_result = cur.fetchone()
-        if user_result:
-            user_plan = user_result['plan'] if user_result['plan'] else 'free'
-            session["plan"] = user_plan  # Update session with current plan
-            session["plan_details"] = user_result  # Store all plan details
-        
-        conn.close()
+            # First, rollback any aborted transaction to start fresh
+            conn.rollback()
+            
+            # Get user's flashcards
+            cur.execute("SELECT * FROM flashcards WHERE user_id=%s ORDER BY created_at DESC", (session['user_id'],))
+            cards = cur.fetchall()
+            
+            # Get total count of flashcards for this user
+            cur.execute("SELECT COUNT(*) as total FROM flashcards WHERE user_id=%s", (session['user_id'],))
+            total_result = cur.fetchone()
+            total_cards = total_result['total'] if total_result else 0
+                
+            # Get user's current plan from database
+            cur.execute("SELECT plan, plan_duration, amount_paid, plan_start_date, plan_end_date FROM users WHERE id=%s", (session['user_id'],))
+            user_result = cur.fetchone()
+            if user_result:
+                user_plan = user_result['plan'] if user_result['plan'] else 'free'
+                session["plan"] = user_plan  # Update session with current plan
+                session["plan_details"] = user_result  # Store all plan details
+            
+        except psycopg2.Error as e:
+            # If there's a database error, rollback and handle it
+            conn.rollback()
+            print(f"Database error in dashboard: {e}")
+            flash("Database error occurred", "danger")
+        finally:
+            conn.close()
     
     return render_template("dashboard.html", 
                          flashcards=cards, 
                          name=session.get("name", "User"), 
                          plan=session.get("plan", "free"),
-                         total_cards=total_cards,
-                         mastered_cards=mastered_cards)
+                         total_cards=total_cards)
 
 @app.route('/premium')
 def premium():
@@ -587,7 +592,7 @@ def debug_user(user_id):
     if not conn:
         return jsonify({"error": "Database connection failed"}), 500
         
-    cur = conn.cursor(dictionary=True)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("SELECT * FROM users WHERE id = %s", (user_id,))
     user = cur.fetchone()
     conn.close()
@@ -618,7 +623,7 @@ def debug_update_plan():
         session["plan"] = plan_type
         return jsonify({"status": "success", "message": "Plan updated"})
     else:
-        return jsonify({"status": "error", "message": "Failed to update plan"}), 500
+        return jsonify({"status": 'error', "message": "Failed to update plan"}), 500
 
 # ---------------- GENERATE FLASHCARDS ----------------
 @app.route('/generate', methods=['POST'])
@@ -631,10 +636,10 @@ def generate():
     if user_plan == "free":
         conn = get_db_connection()
         if conn:
-            cur = conn.cursor(dictionary=True)
+            cur = conn.cursor()
             cur.execute("SELECT COUNT(*) as total FROM flashcards WHERE user_id=%s",(session['user_id'],))
             total_result = cur.fetchone()
-            total_cards = total_result['total'] if total_result else 0
+            total_cards = total_result[0] if total_result else 0
             conn.close()
             
             if total_cards >= 10:
@@ -658,10 +663,10 @@ def generate():
     if user_plan == "free":
         conn = get_db_connection()
         if conn:
-            cur = conn.cursor(dictionary=True)
+            cur = conn.cursor()
             cur.execute("SELECT COUNT(*) as total FROM flashcards WHERE user_id=%s",(session['user_id'],))
             total_result = cur.fetchone()
-            total_cards = total_result['total'] if total_result else 0
+            total_cards = total_result[0] if total_result else 0
             conn.close()
             
             # Calculate how many new cards we can actually save
@@ -688,7 +693,7 @@ def generate():
             cur.execute("INSERT INTO flashcards (user_id, question, answer) VALUES (%s,%s,%s)", 
                         (session['user_id'], q, a))
             cards_saved += 1
-        except mysql.connector.Error as err:
+        except psycopg2.Error as err:
             logger.error(f"Error saving flashcard: {err}")
     
     conn.commit()
@@ -719,7 +724,7 @@ def api_flashcards():
     conn = get_db_connection()
     if not conn:
         return jsonify({"error": "Database connection failed"}), 500
-    cur = conn.cursor(dictionary=True)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("SELECT * FROM flashcards WHERE user_id=%s ORDER BY created_at DESC",(session['user_id'],))
     cards = cur.fetchall()
     conn.close()
@@ -735,29 +740,21 @@ def api_user_stats():
     if not conn:
         return jsonify({"error": "Database connection failed"}), 500
         
-    cur = conn.cursor(dictionary=True)
+    cur = conn.cursor()
     
     # Get total flashcards count
     cur.execute("SELECT COUNT(*) as total FROM flashcards WHERE user_id=%s",(session['user_id'],))
     total_result = cur.fetchone()
-    total_cards = total_result['total'] if total_result else 0
-    
-    # Get mastered cards count (assuming a 'mastered' column exists)
-    try:
-        cur.execute("SELECT COUNT(*) as mastered FROM flashcards WHERE user_id=%s AND mastered=1",(session['user_id'],))
-        mastered_result = cur.fetchone()
-        mastered_cards = mastered_result['mastered'] if mastered_result else 0
-    except:
-        mastered_cards = 0
+    total_cards = total_result[0] if total_result else 0
     
     conn.close()
     
     return jsonify({
         "total_cards": total_cards,
-        "mastered_cards": mastered_cards,
         "plan": session.get("plan", "free"),
         "max_cards": 10 if session.get("plan", "free") == "free" else float('inf')
     })
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
