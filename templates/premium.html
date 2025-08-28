@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Your Plan - StudyMate AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+        
+        .container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        
+        .container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        h1 {
+            color: #ffce00;
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+        
+        .plans-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .plan {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            width: 250px;
+            transition: transform 0.3s ease;
+        }
+        
+        .plan:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .plan.premium {
+            border: 2px solid #ffce00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .plan.premium::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: #ffce00;
+            color: #000;
+            padding: 5px 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transform: rotate(45deg);
+        }
+        
+        .plan-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .plan.premium .plan-name {
+            color: #ffce00;
+        }
+        
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .price-amount {
+            color: #ffce00;
+        }
+        
+        .price-duration {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .savings {
+            color: #4cc9f0;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .features {
+            text-align: left;
+            margin: 15px 0;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+        
+        .feature i {
+            margin-right: 8px;
+            min-width: 16px;
+        }
+        
+        .basic-feature i {
+            color: #8a8a8a;
+        }
+        
+        .premium-feature i {
+            color: #4cc9f0;
+        }
+        
+        .btn-plan {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-basic {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .btn-basic:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-premium {
+            background: linear-gradient(135deg, #ffce00, #ff9500);
+            color: #000;
+        }
+        
+        .btn-premium:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 206, 0, 0.4);
+        }
+        
+        .back-link {
+            display: block;
+            margin-top: 25px;
+            color: #4cc9f0;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .modal-content {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 15px;
+            width: 400px;
+            max-width: 90%;
+            max-height: 90vh;
+            text-align: center;
+            overflow-y: auto;
+        }
+        
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        
+        #payment-form {
+            margin-top: 15px;
+        }
+        
+        .form-row {
+            margin-bottom: 15px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #2a2a2a;
+            color: white;
+            margin-top: 5px;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        
+        .form-label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: none;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .success-message {
+            display: none;
+            color: #4cc9f0;
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                align-items: flex-start;
+            }
+            
+            .container {
+                padding: 20px 15px;
+                max-height: 90vh;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .plans-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .plan {
+                width: 100%;
+                max-width: 300px;
+                padding: 15px;
+            }
+            
+            .plan-name {
+                font-size: 1.2rem;
+            }
+            
+            .price {
+                font-size: 1.7rem;
+            }
+            
+            .feature {
+                font-size: 0.8rem;
+            }
+            
+            .btn-plan {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-crown"></i> Upgrade Your Plan</h1>
+        <p>Choose the plan that works best for you and unlock more features!</p>
+        
+        <div class="plans-container">
+            <!-- Basic Plan -->
+            <div class="plan basic">
+                <div class="plan-name">Basic Plan</div>
+                
+                <div class="price">
+                    <span class="price-amount">Ksh 100</span>
+                    <span class="price-duration">/month</span>
+                </div>
+                
+                <div class="price">
+                    <span class="price-amount">Ksh 200</span>
+                    <span class="price-duration">/3 months</span>
+                </div>
+                
+                <div class="features">
+                    <div class="feature basic-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>50 flashcard generation per day</span>
+                    </div>
+                    <div class="feature basic-feature">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Standard processing</span>
+                    </div>
+                    <div class="feature basic-feature">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Web access only</span>
+                    </div>
+                </div>
+                
+                <button class="btn-plan btn-basic" onclick="selectPlan('basic', 1, 100)">Select Basic (1 Month)</button>
+                <button class="btn-plan btn-basic" onclick="selectPlan('basic', 3, 200)">Select Basic (3 Months)</button>
+            </div>
+            
+            <!-- Premium Plan -->
+            <div class="plan premium">
+                <div class="plan-name">Premium Plan</div>
+                
+                <div class="price">
+                    <span class="price-amount">Ksh 200</span>
+                    <span class="price-duration">/month</span>
+                </div>
+                
+                <div class="price">
+                    <span class="price-amount">Ksh 250</span>
+                    <span class="price-duration">/3 months</span>
+                </div>
+                
+                <div class="features">
+                    <div class="feature premium-feature">
+                        <i class="fas fa-infinity"></i>
+                        <span>Unlimited flashcard generation</span>
+                    </div>
+                    <div class="feature premium-feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>Priority processing</span>
+                    </div>
+                    <div class="feature premium-feature">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Mobile app access</span>
+                    </div>
+                </div>
+                
+                <button class="btn-plan btn-premium" onclick="selectPlan('premium', 1, 200)">Select Premium (1 Month)</button>
+                <button class="btn-plan btn-premium" onclick="selectPlan('premium', 3, 250)">Select Premium (3 Months)</button>
+            </div>
+        </div>
+        
+        <a href="/dashboard" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="payment-modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Complete Your Payment</h2>
+            <p id="modal-description">You're subscribing to the <span id="plan-type"></span> plan for <span id="plan-duration"></span> months</p>
+            <p>Total: Ksh <span id="plan-amount"></span></p>
+            
+            <form id="payment-form">
+                <div class="form-row">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                
+                <button type="button" class="btn-premium" onclick="initiatePaystackPayment()" style="margin-top: 20px;">
+                    Pay with Paystack
+                </button>
+                <button type="button" class="btn-basic" onclick="closePaymentModal()" style="margin-top: 10px;">Cancel</button>
+            </form>
+            
+            <div class="loading" id="payment-loading">
+                <i class="fas fa-spinner fa-spin"></i> Processing payment...
+            </div>
+            
+            <div class="success-message" id="payment-success">
+                <i class="fas fa-check-circle"></i> Payment successful! Redirecting...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPlan = null;
+        let selectedDuration = null;
+        let selectedAmount = null;
+        
+        function selectPlan(planType, duration, amount) {
+            selectedPlan = planType;
+            selectedDuration = duration;
+            selectedAmount = amount;
+            
+            // Show payment modal
+            document.getElementById('payment-modal').style.display = 'flex';
+            document.getElementById('plan-type').textContent = planType;
+            document.getElementById('plan-duration').textContent = duration;
+            document.getElementById('plan-amount').textContent = selectedAmount;
+        }
+        
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+            // Reset form
+            document.getElementById('email').value = '';
+        }
+        
+        function initiatePaystackPayment() {
+            const email = document.getElementById('email').value;
+            
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('payment-loading').style.display = 'block';
+            
+            // In a real implementation, you would call your backend to initialize the transaction
+            // For demonstration, we'll use a mock implementation
+            
+            // This is where you would typically make a fetch request to your backend
+            // to initialize the Paystack transaction and get a reference
+            
+            // Mock reference generation (in production, this should come from your backend)
+            const reference = 'STUDYMATE_' + Math.floor(Math.random() * 1000000000);
+            
+            // Initialize Paystack payment
+            const handler = PaystackPop.setup({
+                key: 'pk_test_c99a2ba7c2367e1434bd02194b2d05fc8b4a24b5', // Replace with your public key
+                email: email,
+                amount: selectedAmount * 100, // Convert to kobo
+                currency: 'KES',
+                ref: reference,
+                metadata: {
+                    custom_fields: [
+                        {
+                            display_name: "Plan Type",
+                            variable_name: "plan_type",
+                            value: selectedPlan
+                        },
+                        {
+                            display_name: "Duration",
+                            variable_name: "duration_months",
+                            value: selectedDuration
+                        }
+                    ]
+                },
+                callback: function(response) {
+                    // Payment successful
+                    document.getElementById('payment-loading').style.display = 'none';
+                    document.getElementById('payment-success').style.display = 'block';
+                    
+                    // In a real implementation, you would verify the transaction with your backend
+                    console.log('Payment successful', response);
+                    
+                    // Redirect after success
+                    setTimeout(function() {
+                        alert('Payment successful! Your account has been upgraded.');
+                        closePaymentModal();
+                        // Here you would typically redirect to a success page or update the UI
+                    }, 2000);
+                },
+                onClose: function() {
+                    // User closed the payment window
+                    document.getElementById('payment-loading').style.display = 'none';
+                    alert('Payment was not completed. You can try again later.');
+                }
+            });
+            
+            handler.openIframe();
+        }
+        
+        // Close modal if clicked outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('payment-modal');
+            if (event.target === modal) {
+                closePaymentModal();
+            }
+        });
+    </script>
+</body>
+</html>
