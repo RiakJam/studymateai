@@ -467,13 +467,7 @@
             // Show loading state
             document.getElementById('payment-loading').style.display = 'block';
             
-            // In a real implementation, you would call your backend to initialize the transaction
-            // For demonstration, we'll use a mock implementation
-            
-            // This is where you would typically make a fetch request to your backend
-            // to initialize the Paystack transaction and get a reference
-            
-            // Mock reference generation (in production, this should come from your backend)
+            // Generate a unique reference
             const reference = 'STUDYMATE_' + Math.floor(Math.random() * 1000000000);
             
             // Initialize Paystack payment
@@ -498,19 +492,8 @@
                     ]
                 },
                 callback: function(response) {
-                    // Payment successful
-                    document.getElementById('payment-loading').style.display = 'none';
-                    document.getElementById('payment-success').style.display = 'block';
-                    
-                    // In a real implementation, you would verify the transaction with your backend
-                    console.log('Payment successful', response);
-                    
-                    // Redirect after success
-                    setTimeout(function() {
-                        alert('Payment successful! Your account has been upgraded.');
-                        closePaymentModal();
-                        // Here you would typically redirect to a success page or update the UI
-                    }, 2000);
+                    // Payment successful - update user plan in backend
+                    updateUserPlan(reference, selectedPlan, selectedDuration, selectedAmount);
                 },
                 onClose: function() {
                     // User closed the payment window
@@ -520,6 +503,44 @@
             });
             
             handler.openIframe();
+        }
+        
+        function updateUserPlan(reference, planType, duration, amount) {
+            // Call backend to update user plan
+            fetch('/simulate-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    reference: reference,
+                    plan_type: planType,
+                    duration_months: duration,
+                    amount: amount * 100 // Convert to kobo
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('payment-loading').style.display = 'none';
+                
+                if (data.status === 'success') {
+                    document.getElementById('payment-success').style.display = 'block';
+                    
+                    // Update session and redirect after success
+                    setTimeout(function() {
+                        alert('Payment successful! Your account has been upgraded.');
+                        closePaymentModal();
+                        window.location.href = '/dashboard'; // Redirect to dashboard
+                    }, 2000);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                document.getElementById('payment-loading').style.display = 'none';
+                console.error('Error:', error);
+                alert('An error occurred while updating your plan. Please contact support.');
+            });
         }
         
         // Close modal if clicked outside

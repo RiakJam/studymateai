@@ -855,8 +855,7 @@ class PaymentProcessor:
                     plan_duration = %s, 
                     amount_paid = %s, 
                     plan_start_date = %s, 
-                    plan_end_date = %s,
-                    updated_at = NOW()
+                    plan_end_date = %s
                 WHERE id = %s
                 """
                 
