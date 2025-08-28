@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Study Buddy - Smart Learning for Students</title>
+  <title>Study Mate AI - Smart Learning for Students</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* Base Styles & Variables */
 :root {
-  --primary: #ff6f61;      
+  --primary: #ffce00;;      
   --secondary: #6a5acd;    
   --accent: #00d4ff;       
   --light: #fdf6f0;        
@@ -27,14 +27,9 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   transition: var(--transition);
-  color: var(--text-light);
-  background-color: var(--light);
-  overflow-x: hidden;
-}
-
-body.dark {
-  background-color: var(--dark);
   color: var(--text-dark);
+  background-color: var(--dark);
+  overflow-x: hidden;
 }
 
 .container {
@@ -65,7 +60,7 @@ p { margin-bottom: 1.5rem; }
   display: inline-block;
   padding: 12px 28px;
   background: var(--primary);
-  color: white;
+  color: black; /* Changed from white to black for better contrast */
   border: none;
   border-radius: var(--radius);
   cursor: pointer;
@@ -78,14 +73,15 @@ p { margin-bottom: 1.5rem; }
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   background: var(--secondary);
+  color: white; /* Change text to white on hover for secondary background */
 }
 .btn-outline {
   background: transparent;
   border: 2px solid var(--primary);
   color: var(--primary);
 }
-.dark .btn-outline { color: var(--text-dark); border-color: var(--text-dark); }
-.btn-outline:hover { background: var(--primary); color: white; }
+.btn-outline { color: var(--text-dark); border-color: var(--text-dark); }
+.btn-outline:hover { background: var(--primary); color: black; } /* Changed to black for contrast */
 
 /* Header */
 header {
@@ -94,16 +90,15 @@ header {
   top: 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(30, 30, 47, 0.95);
   backdrop-filter: blur(10px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
   transition: var(--transition);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.dark header { background: rgba(30, 30, 47, 0.95); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
 header.scrolled { padding: 1rem 2rem; }
 
 .header-container {
@@ -136,24 +131,11 @@ header.scrolled { padding: 1rem 2rem; }
 .nav-links li { margin: 0; }
 .nav-links a {
   text-decoration: none;
-  color: var(--text-light);
+  color: var(--text-dark);
   font-weight: 500;
   transition: var(--transition);
 }
-.dark .nav-links a { color: var(--text-dark); }
 .nav-links a:hover { color: var(--primary); }
-
-/* Theme toggle button */
-.theme-item { margin-left: 1rem; }
-.theme-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: var(--text-light);
-  transition: var(--transition);
-}
-.dark .theme-toggle { color: var(--text-dark); }
 
 /* Hamburger Menu */
 .hamburger {
@@ -166,11 +148,10 @@ header.scrolled { padding: 1rem 2rem; }
 .hamburger span {
   width: 25px;
   height: 3px;
-  background: var(--text-light);
+  background: var(--text-dark);
   border-radius: 2px;
   transition: all 0.3s ease;
 }
-body.dark .hamburger span { background: var(--text-dark); }
 
 /* Hamburger to X */
 .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
@@ -187,13 +168,12 @@ body.dark .hamburger span { background: var(--text-dark); }
     max-height: 0;
     overflow: hidden;
     flex-direction: column;
-    background: var(--light);
+    background: var(--dark);
     gap: 0.5rem;
     transition: max-height 0.3s ease;
     padding: 1rem 1.5rem;
     align-items: flex-start; /* left align nav links */
   }
-  body.dark .nav-links { background: var(--dark); }
   .nav-links.open { max-height: 500px; }
   .nav-links li { width: 100%; margin: 0.8rem 0; }
   .hamburger { display: flex; margin-left: auto; }
@@ -208,12 +188,10 @@ body.dark .hamburger span { background: var(--text-dark); }
 .hero-image { max-width: 100%; margin-top: 3rem; border-radius: var(--radius); box-shadow: var(--shadow); animation: float 6s ease-in-out infinite; }
 
 /* Features */
-.features { padding: 6rem 0; background: rgba(255, 111, 97, 0.05); }
-.dark .features { background: rgba(106, 90, 205, 0.1); }
+.features { padding: 6rem 0; background: rgba(106, 90, 205, 0.1); }
 .section-title { text-align: center; margin-bottom: 4rem; }
 .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 2rem; }
-.feature-card { background: white; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow); transition: var(--transition); text-align: center; }
-.dark .feature-card { background: #2a2a3f; }
+.feature-card { background: #2a2a3f; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow); transition: var(--transition); text-align: center; }
 .feature-card:hover { transform: translateY(-10px); }
 .feature-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1.5rem; }
 
@@ -221,26 +199,28 @@ body.dark .hamburger span { background: var(--text-dark); }
 .how-it-works { padding: 6rem 0; }
 .steps { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem; }
 .step { flex: 1; min-width: 250px; text-align: center; padding: 2rem; position: relative; }
-.step-number { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; font-weight: bold; margin: 0 auto 1.5rem; font-size: 1.5rem; }
+.step-number { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: var(--primary); color: black; /* Changed to black for contrast */ border-radius: 50%; font-weight: bold; margin: 0 auto 1.5rem; font-size: 1.5rem; }
+
+/* Pricing Section */
+.pricing { padding: 6rem 0; }
+.pricing .feature-card { background: #2a2a3f; }
 
 /* Testimonials */
-.testimonials { padding: 6rem 0; background: rgba(255, 111, 97, 0.05); }
-.dark .testimonials { background: rgba(106, 90, 205, 0.1); }
+.testimonials { padding: 6rem 0; background: rgba(106, 90, 205, 0.1); }
 .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 2rem; margin-top: 3rem; }
-.testimonial-card { background: white; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow); }
-.dark .testimonial-card { background: #2a2a3f; }
+.testimonial-card { background: #2a2a3f; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow); }
 .testimonial-text { font-style: italic; margin-bottom: 1.5rem; }
 .testimonial-author { display: flex; align-items: center; }
-.author-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 1rem; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+.author-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 1rem; background: var(--primary); display: flex; align-items: center; justify-content: center; color: black; /* Changed to black for contrast */ font-weight: bold; }
 
 /* CTA Section */
-.cta { padding: 6rem 0; text-align: center; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
-.cta h2::after { background: white; }
+.cta { padding: 6rem 0; text-align: center; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: black; /* Changed to black for contrast */ }
+.cta h2::after { background: black; /* Changed to black for contrast */ }
 .cta-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; }
-.cta .btn { background: white; color: var(--primary); }
-.cta .btn:hover { background: rgba(255, 255, 255, 0.9); }
-.cta .btn-outline { background: transparent; border-color: white; color: white; }
-.cta .btn-outline:hover { background: white; color: var(--primary); }
+.cta .btn { background: black; /* Changed to black for contrast */ color: var(--primary); }
+.cta .btn:hover { background: rgba(0, 0, 0, 0.9); }
+.cta .btn-outline { background: transparent; border-color: black; /* Changed to black for contrast */ color: black; /* Changed to black for contrast */ }
+.cta .btn-outline:hover { background: black; /* Changed to black for contrast */ color: var(--primary); }
 
 /* Footer */
 footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark); }
@@ -252,7 +232,7 @@ footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark);
 .footer-links a:hover { color: white; }
 .social-links { display: flex; gap: 1rem; margin-top: 1.5rem; }
 .social-links a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; transition: var(--transition); }
-.social-links a:hover { background: var(--primary); transform: translateY(-3px); }
+.social-links a:hover { background: var(--primary); color: black; /* Changed to black for contrast */ transform: translateY(-3px); }
 .copyright { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: #ccc; font-size: 0.9rem; }
 
 /* Animations */
@@ -284,11 +264,6 @@ footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark);
       <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#testimonials">Testimonials</a></li>
       <li><a href="#pricing">Pricing</a></li>
-      <li class="theme-item">
-        <button class="theme-toggle" id="theme-toggle">
-          <i class="fas fa-moon"></i>
-        </button>
-      </li>
     </ul>
 
     <!-- Hamburger for mobile -->
@@ -351,7 +326,7 @@ footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark);
     <div class="container">
       <div class="section-title">
         <h2>How It Works</h2>
-        <p>Getting started with AI Study Buddy is simple</p>
+        <p>Getting started with Study Mate AI is simple</p>
       </div>
       <div class="steps">
         <div class="step">
@@ -421,7 +396,7 @@ footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark);
       <div class="testimonial-grid">
         <div class="testimonial-card">
           <div class="testimonial-text">
-            "AI Study Buddy cut my study time in half while improving my test scores. The personalized quizzes are incredibly effective!"
+            "Study Mate AI cut my study time in half while improving my test scores. The personalized quizzes are incredibly effective!"
           </div>
           <div class="testimonial-author">
             <div class="author-avatar">SJ</div>
@@ -464,7 +439,7 @@ footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark);
     <div class="container">
       <div class="footer-content">
         <div class="footer-column">
-          <h3>AI Study Buddy</h3>
+          <h3>Study Mate AI</h3>
           <p>Revolutionizing education through AI-powered learning tools for students</p>
           <div class="social-links">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -478,11 +453,9 @@ footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark);
           <ul class="footer-links">
             <li><a href="#features">Features</a></li>
             <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#">Case Studies</a></li>
-            <li><a href="#">Testimonials</a></li>
           </ul>
         </div>
-        <div class="footer-column">
+        <!-- <div class="footer-column">
           <h3>Resources</h3>
           <ul class="footer-links">
             <li><a href="#">Blog</a></li>
@@ -490,8 +463,8 @@ footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark);
             <li><a href="#">Tutorials</a></li>
             <li><a href="#">Webinars</a></li>
           </ul>
-        </div>
-        <div class="footer-column">
+        </div> -->
+        <!-- <div class="footer-column">
           <h3>Company</h3>
           <ul class="footer-links">
             <li><a href="#">About Us</a></li>
@@ -499,37 +472,15 @@ footer { padding: 4rem 0 2rem; background: var(--dark); color: var(--text-dark);
             <li><a href="#">Contact Us</a></li>
             <li><a href="#">Privacy Policy</a></li>
           </ul>
-        </div>
+        </div> -->
       </div>
       <div class="copyright">
-        <p>&copy; 2023 AI Study Buddy. All rights reserved.</p>
+        <p>&copy; 2025 Study Mate AI. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
 <script>
-// Theme Toggle
-const themeToggle = document.getElementById('theme-toggle');
-const body = document.body;
-const icon = themeToggle.querySelector('i');
-
-if (localStorage.getItem('theme') === 'dark' || 
-    (window.matchMedia('(prefers-color-scheme: dark)').matches && !localStorage.getItem('theme'))) {
-  body.classList.add('dark');
-  icon.classList.replace('fa-moon', 'fa-sun');
-}
-
-themeToggle.addEventListener('click', () => {
-  body.classList.toggle('dark');
-  if (body.classList.contains('dark')) {
-    localStorage.setItem('theme', 'dark');
-    icon.classList.replace('fa-moon', 'fa-sun');
-  } else {
-    localStorage.setItem('theme', 'light');
-    icon.classList.replace('fa-sun', 'fa-moon');
-  }
-});
-
 // Header scroll effect
 const header = document.getElementById('header');
 window.addEventListener('scroll', () => {

@@ -7,59 +7,31 @@
     <title>Study Mate AI - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Base Styles & Variables */
-        :root {
-            --primary: #4361ee;
-            --secondary: #3a0ca3;
-            --accent: #4cc9f0;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #4bb543;
-            --warning: #ffcc00;
-            --danger: #dc3545;
-            --text-light: #f8f9fa;
-            --text-dark: #212529;
-            --card-bg: #ffffff;
-            --sidebar-bg: #343a40;
-            --header-bg: #4361ee;
-            --transition: all 0.3s ease;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --radius: 12px;
-            --sidebar-width: 250px;
-        }
-
-        /* Dark Mode Variables */
-        .dark-mode {
-            --light: #121212;
-            --card-bg: #1e1e1e;
-            --text-dark: #f8f9fa;
-            --text-light: #f8f9fa;
-            --sidebar-bg: #1a1a1a;
-            --header-bg: #1a1a1a;
-        }
-
-        /* General Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background: var(--light);
-            color: var(--text-dark);
-            transition: var(--transition);
+            background: linear-gradient(135deg, #6a11cb, #053381);
+            color: white;
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        /* Layout */
+        .app-container {
             display: flex;
             min-height: 100vh;
         }
-
+        
         /* Sidebar Styles */
         .sidebar {
-            width: var(--sidebar-width);
-            background: var(--sidebar-bg);
-            color: var(--text-light);
+            width: 250px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
             height: 100vh;
             position: fixed;
             left: 0;
@@ -67,96 +39,108 @@
             padding: 20px 0;
             display: flex;
             flex-direction: column;
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
-
+        
         .logo {
             text-align: center;
             padding: 20px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
         }
-
+        
         .logo h2 {
-            color: var(--accent);
+            color: #ffce00;
             font-size: 1.5rem;
         }
-
+        
         .nav-links {
             list-style: none;
             flex-grow: 1;
         }
-
+        
         .nav-links li {
             margin-bottom: 10px;
         }
-
+        
         .nav-links a {
             display: flex;
             align-items: center;
             padding: 12px 20px;
-            color: var(--text-light);
+            color: white;
             text-decoration: none;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             border-left: 4px solid transparent;
         }
-
+        
         .nav-links a:hover,
         .nav-links a.active {
             background: rgba(255, 255, 255, 0.1);
-            border-left-color: var(--accent);
+            border-left-color: #ffce00;
         }
-
+        
         .nav-links i {
             margin-right: 15px;
             font-size: 1.2rem;
         }
-
+        
         .sidebar-footer {
             padding: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+        
+        .sidebar-footer a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+        }
+        
+        .sidebar-footer i {
+            margin-right: 10px;
+        }
+        
         /* Main Content Area */
         .main-content {
             flex: 1;
-            margin-left: var(--sidebar-width);
+            margin-left: 250px;
             padding: 20px;
-            width: calc(100% - var(--sidebar-width));
+            width: calc(100% - 250px);
         }
-
+        
         /* Header Styles */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--header-bg);
+            background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 15px 25px;
-            border-radius: var(--radius);
+            border-radius: 15px;
             margin-bottom: 25px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-
+        
         .user-info {
             display: flex;
             align-items: center;
         }
-
+        
         .user-avatar {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: var(--accent);
+            background: #ffce00;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             font-weight: bold;
             font-size: 1.2rem;
+            color: #000;
         }
-
+        
         /* Dashboard Cards */
         .stats-cards {
             display: grid;
@@ -164,21 +148,21 @@
             gap: 20px;
             margin-bottom: 30px;
         }
-
+        
         .stat-card {
-            background: var(--card-bg);
+            background: rgba(0, 0, 0, 0.7);
             padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
-
+        
         .stat-card:hover {
             transform: translateY(-5px);
         }
-
+        
         .stat-icon {
             width: 60px;
             height: 60px;
@@ -188,150 +172,155 @@
             justify-content: center;
             margin-right: 15px;
             font-size: 1.5rem;
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
+            background: rgba(255, 206, 0, 0.1);
+            color: #ffce00;
         }
-
+        
         .stat-content h3 {
             font-size: 1.8rem;
             margin-bottom: 5px;
+            color: #ffce00;
         }
-
+        
         .stat-content p {
-            color: #6c757d;
+            color: rgba(255, 255, 255, 0.7);
         }
-
+        
         .premium-btn {
             margin-top: 10px;
             padding: 8px 15px;
             background: linear-gradient(135deg, #ffce00, #ff9500);
             color: #000;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
-
+        
         .premium-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(255, 206, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 206, 0, 0.4);
         }
-
+        
         /* Flashcard Generator */
         .generator-card {
-            background: var(--card-bg);
+            background: rgba(0, 0, 0, 0.7);
             padding: 25px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             margin-bottom: 30px;
         }
-
+        
         .generator-card h2 {
             margin-bottom: 20px;
-            color: var(--primary);
+            color: #ffce00;
             display: flex;
             align-items: center;
         }
+        
         .generator-card h2 i {
             margin-right: 10px;
         }
-
+        
         textarea {
             width: 100%;
             padding: 15px;
-            border-radius: var(--radius);
-            border: 1px solid #ced4da;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             margin-bottom: 15px;
             font-size: 1rem;
             font-family: inherit;
             resize: vertical;
             min-height: 150px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
         }
-
+        
         textarea:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            border-color: #ffce00;
+            box-shadow: 0 0 0 3px rgba(255, 206, 0, 0.2);
         }
-
+        
         .form-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .limit-info {
             font-size: 0.9rem;
-            color: #6c757d;
+            color: rgba(255, 255, 255, 0.7);
         }
-
+        
         /* Buttons */
         .btn {
             padding: 12px 24px;
-            border-radius: var(--radius);
+            border-radius: 50px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
-
+        
         .btn i {
             margin-right: 8px;
         }
-
+        
         .btn-primary {
-            background: var(--primary);
-            color: white;
+            background: linear-gradient(135deg, #ffce00, #ff9500);
+            color: #000;
         }
-
+        
         .btn-primary:hover {
-            background: var(--secondary);
+            background: linear-gradient(135deg, #ff9500, #ffce00);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 206, 0, 0.4);
         }
-
+        
         /* Flashcards Grid */
         .flashcards-section h2 {
             margin-bottom: 20px;
-            color: var(--primary);
+            color: #ffce00;
             display: flex;
             align-items: center;
         }
-
+        
         .flashcards-section h2 i {
             margin-right: 10px;
         }
-
+        
         .flashcards-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
         }
-
+        
         .flashcard {
             perspective: 1000px;
             height: 180px;
             cursor: pointer;
         }
-
+        
         .card-inner {
             position: relative;
             width: 100%;
             height: 100%;
             transition: transform 0.6s;
             transform-style: preserve-3d;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-
+        
         .flashcard.flipped .card-inner {
             transform: rotateY(180deg);
         }
-
+        
         .card-front,
         .card-back {
             position: absolute;
@@ -341,84 +330,57 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: var(--radius);
+            border-radius: 15px;
             padding: 20px;
             text-align: center;
         }
-
+        
         .card-front {
-            background: var(--primary);
-            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffce00;
             font-weight: bold;
             font-size: 1.1rem;
         }
-
+        
         .card-back {
-            background: var(--card-bg);
-            color: var(--text-dark);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
             transform: rotateY(180deg);
-            border: 1px solid #dee2e6;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
+        
         .empty-state {
             text-align: center;
             padding: 40px;
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            color: #6c757d;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.7);
         }
-
+        
         .empty-state i {
             font-size: 3rem;
             margin-bottom: 15px;
-            color: #ced4da;
+            color: rgba(255, 255, 255, 0.3);
         }
-
-        /* Theme Toggle */
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            cursor: pointer;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100;
+            background: #ffce00;
+            color: #000;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: var(--transition);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .menu-toggle {
-                display: block;
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                z-index: 1100;
-                background: var(--primary);
-                color: white;
-                width: 45px;
-                height: 45px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: var(--shadow);
-            }
-        }
-
+        
         /* Flash Messages */
         .flash-messages {
             position: fixed;
@@ -427,64 +389,105 @@
             z-index: 1200;
             max-width: 350px;
         }
-
+        
         .flash-message {
             padding: 15px 20px;
             margin-bottom: 15px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             animation: slideIn 0.3s ease forwards;
         }
-
+        
         .flash-message.success {
-            background: var(--success);
+            background: rgba(75, 181, 67, 0.9);
             color: white;
         }
-
+        
         .flash-message.danger {
-            background: var(--danger);
+            background: rgba(220, 53, 69, 0.9);
             color: white;
         }
-
+        
         .flash-message.warning {
-            background: var(--warning);
-            color: var(--text-dark);
+            background: rgba(255, 206, 0, 0.9);
+            color: #000;
         }
-
+        
         .flash-message i {
             margin-right: 10px;
             font-size: 1.2rem;
         }
-
+        
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
                 opacity: 0;
             }
-
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
-
+        
         /* Loading Spinner */
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--primary);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #ffce00;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 20px auto;
             display: none;
         }
-
+        
         @keyframes spin {
             to {
                 transform: rotate(360deg);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: all 0.3s ease;
+            }
+        
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .form-footer {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .flashcards-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -492,7 +495,7 @@
 
 <body>
     <!-- Mobile Menu Toggle -->
-    <button class="menu-toggle" id="menuToggle" style="display: none;">
+    <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i>
     </button>
 
@@ -510,10 +513,7 @@
         </ul>
 
         <div class="sidebar-footer">
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i> Dark Mode
-            </button>
-            <a href="/logout" style="color: var(--text-light); margin-top: 10px; display: block;">
+            <a href="/logout">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>
@@ -530,7 +530,7 @@
                 </div>
                 <div>
                     <div>Welcome, <strong>{{ name }}</strong></div>
-                    </small>
+                    <small>Plan: {{ plan }}</small>
                 </div>
             </div>
         </div>
@@ -552,7 +552,8 @@
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>{{ mastered_cards }}</h3>
+                    <!-- <h3>{{ mastered_cards }}</h3>
+                    <p>Mastered Cards</p> -->
                     {% if plan == 'free' %}
                     <button class="premium-btn" onclick="window.location.href='/premium'">
                         <i class="fas fa-crown"></i> Upgrade to Track
@@ -624,25 +625,6 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Load flashcards from the server
             loadFlashcardsFromServer();
-
-            // Theme Toggle
-            const themeToggle = document.getElementById('themeToggle');
-            themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                if (document.body.classList.contains('dark-mode')) {
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
-                    localStorage.setItem('theme', 'light');
-                }
-            });
-
-            // Check for saved theme preference
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-            }
 
             // Mobile Menu Toggle
             const menuToggle = document.getElementById('menuToggle');
