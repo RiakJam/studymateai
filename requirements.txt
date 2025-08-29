@@ -252,7 +252,7 @@ types-polib==1.2
 types-portpicker==1.6
 types-protobuf==5.29.1
 types-psutil==6.1
-types-psycopg2==2.9.10
+types-psycopg2-binary==2.9.10
 types-pyasn1==0.6
 types-pyaudio==0.2
 types-PyAutoGUI==0.9
