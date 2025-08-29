@@ -21,18 +21,35 @@ app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
 PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY", "sk_test_34d568ac6ea779fe94bafe563e481b7c163dfcb0")
 
 # Database configuration - using environment variables for Render
+# def get_db_connection():
+#     try:
+#         database_url = os.environ.get(
+#             "DATABASE_URL",
+#             "postgresql://hackerthone:w7e1GFpoRpDDzkk42Fk8ucCdXIAkDSFm@dpg-d2o8b1emcj7s73b9qbp0-a.oregon-postgres.render.com:5432/hackerthone_db?sslmode=require"
+#         )
+#         conn = psycopg2.connect(database_url)
+#         return conn
+#     except psycopg2.Error as err:
+#         print(f"Database connection failed: {err}")
+#         return None
 def get_db_connection():
     try:
+        # Use the internal DB URL if available, fallback to external
         database_url = os.environ.get(
             "DATABASE_URL",
-            "postgresql://hackerthone:w7e1GFpoRpDDzkk42Fk8ucCdXIAkDSFm@dpg-d2o8b1emcj7s73b9qbp0-a.oregon-postgres.render.com:5432/hackerthone_db?sslmode=require"
+            "postgresql://hackerthone:w7e1GFpoRpDDzkk42Fk8ucCdXIAkDSFm@dpg-d2o8b1emcj7s73b9qbp0-a/hackerthone_db"
         )
+        
+        # If internal URL, no need for sslmode=require
+        if "render.com" in database_url:
+            database_url += "?sslmode=require"
+
         conn = psycopg2.connect(database_url)
         return conn
+
     except psycopg2.Error as err:
         print(f"Database connection failed: {err}")
         return None
-
 # ---------------- PAYMENT PROCESSOR CLASS ----------------
 class PaymentProcessor:
     def __init__(self):
