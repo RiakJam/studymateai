@@ -4,14 +4,26 @@ Jinja2==3.1.6
 itsdangerous==2.2.0
 click==8.1.8
 
-asyncpg==0.30.0
+# Database
 psycopg2-binary==2.9.10
+# asyncpg==0.30.0  # only if you’re using async DB queries
 aiosqlite==0.21.0
 redis==6.1.0
+SQLAlchemy==2.0.36
 
+# HTTP clients
 requests==2.32.3
 httpx==0.28.1
 aiohttp==3.11.16
 
+# Flask extensions
+Flask-Cors==5.0.0
+Flask-Session==0.8.0
+
+# Utilities
 python-dotenv==1.0.1
-gunicorn==23.0.0  # for running Flask on Render
+python-dateutil==2.9.0.post0
+pytz==2025.1
+
+# Deployment
+gunicorn==23.0.0
