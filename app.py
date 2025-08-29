@@ -465,6 +465,7 @@ def logout():
     return redirect(url_for('home'))
 
 # ---------------- DASHBOARD ----------------
+# ---------------- DASHBOARD ----------------
 @app.route('/dashboard')
 def dashboard():
     if "user_id" not in session: 
@@ -485,6 +486,17 @@ def dashboard():
             cur.execute("SELECT * FROM flashcards WHERE user_id=%s ORDER BY created_at DESC", (session['user_id'],))
             cards = cur.fetchall()
             
+            # Convert to list of dictionaries for template rendering
+            cards_list = []
+            for card in cards:
+                cards_list.append({
+                    'id': card['id'],
+                    'user_id': card['user_id'],
+                    'question': card['question'],
+                    'answer': card['answer'],
+                    'created_at': card['created_at']
+                })
+            
             # Get total count of flashcards for this user
             cur.execute("SELECT COUNT(*) as total FROM flashcards WHERE user_id=%s", (session['user_id'],))
             total_result = cur.fetchone()
@@ -496,7 +508,7 @@ def dashboard():
             if user_result:
                 user_plan = user_result['plan'] if user_result['plan'] else 'free'
                 session["plan"] = user_plan  # Update session with current plan
-                session["plan_details"] = user_result  # Store all plan details
+                session["plan_details"] = dict(user_result)  # Convert to dict for session storage
             
         except psycopg2.Error as e:
             # If there's a database error, rollback and handle it
@@ -507,96 +519,142 @@ def dashboard():
             conn.close()
     
     return render_template("dashboard.html", 
-                         flashcards=cards, 
+                         flashcards=cards_list,  # Use the converted list
                          name=session.get("name", "User"), 
                          plan=session.get("plan", "free"),
                          total_cards=total_cards)
-
-@app.route('/premium')
-def premium():
-    if "user_id" not in session: 
-        return redirect(url_for('login'))
+# @app.route('/dashboard')
+# def dashboard():
+#     if "user_id" not in session: 
+#         return redirect(url_for('login'))
     
-    # Get current user plan details
-    processor = PaymentProcessor()
-    user_data = processor.get_user_plan_info(session['user_id'])
+#     conn = get_db_connection()
+#     cards = []
+#     total_cards = 0
     
-    return render_template("premium.html", user_data=user_data)
-
-# ---------------- PAYMENT ROUTES ----------------
-@app.route('/paystack-webhook', methods=['POST'])
-def paystack_webhook():
-    processor = PaymentProcessor()
-    result, status_code = processor.handle_webhook(request.data)
-    return jsonify(result), status_code
-
-@app.route('/verify-payment/<reference>', methods=['GET'])
-def verify_payment(reference):
-    processor = PaymentProcessor()
-    result = processor.verify_transaction(reference)
+#     if conn:
+#         try:
+#             cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            
+#             # First, rollback any aborted transaction to start fresh
+#             conn.rollback()
+            
+#             # Get user's flashcards
+#             cur.execute("SELECT * FROM flashcards WHERE user_id=%s ORDER BY created_at DESC", (session['user_id'],))
+#             cards = cur.fetchall()
+            
+#             # Get total count of flashcards for this user
+#             cur.execute("SELECT COUNT(*) as total FROM flashcards WHERE user_id=%s", (session['user_id'],))
+#             total_result = cur.fetchone()
+#             total_cards = total_result['total'] if total_result else 0
+                
+#             # Get user's current plan from database
+#             cur.execute("SELECT plan, plan_duration, amount_paid, plan_start_date, plan_end_date FROM users WHERE id=%s", (session['user_id'],))
+#             user_result = cur.fetchone()
+#             if user_result:
+#                 user_plan = user_result['plan'] if user_result['plan'] else 'free'
+#                 session["plan"] = user_plan  # Update session with current plan
+#                 session["plan_details"] = user_result  # Store all plan details
+            
+#         except psycopg2.Error as e:
+#             # If there's a database error, rollback and handle it
+#             conn.rollback()
+#             print(f"Database error in dashboard: {e}")
+#             flash("Database error occurred", "danger")
+#         finally:
+#             conn.close()
     
-    if result:
-        return jsonify(result)
-    else:
-        return jsonify({'status': 'error', 'message': 'Failed to verify transaction'}), 400
+#     return render_template("dashboard.html", 
+#                          flashcards=cards, 
+#                          name=session.get("name", "User"), 
+#                          plan=session.get("plan", "free"),
+#                          total_cards=total_cards)
 
-@app.route('/user/<int:user_id>/plan', methods=['GET'])
-def get_user_plan(user_id):
-    processor = PaymentProcessor()
-    user_data = processor.get_user_plan_info(user_id)
+# @app.route('/premium')
+# def premium():
+#     if "user_id" not in session: 
+#         return redirect(url_for('login'))
     
-    if user_data:
-        return jsonify({
-            'status': 'success',
-            'data': user_data
-        })
-    else:
-        return jsonify({
-            'status': 'error',
-            'message': 'User not found or error retrieving data'
-        }), 404
+#     # Get current user plan details
+#     processor = PaymentProcessor()
+#     user_data = processor.get_user_plan_info(session['user_id'])
+    
+#     return render_template("premium.html", user_data=user_data)
 
-# New endpoint for testing - simulate payment without webhook
-@app.route('/simulate-payment', methods=['POST'])
-def simulate_payment():
-    if "user_id" not in session: 
-        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+# # ---------------- PAYMENT ROUTES ----------------
+# @app.route('/paystack-webhook', methods=['POST'])
+# def paystack_webhook():
+#     processor = PaymentProcessor()
+#     result, status_code = processor.handle_webhook(request.data)
+#     return jsonify(result), status_code
+
+# @app.route('/verify-payment/<reference>', methods=['GET'])
+# def verify_payment(reference):
+#     processor = PaymentProcessor()
+#     result = processor.verify_transaction(reference)
+    
+#     if result:
+#         return jsonify(result)
+#     else:
+#         return jsonify({'status': 'error', 'message': 'Failed to verify transaction'}), 400
+
+# @app.route('/user/<int:user_id>/plan', methods=['GET'])
+# def get_user_plan(user_id):
+#     processor = PaymentProcessor()
+#     user_data = processor.get_user_plan_info(user_id)
+    
+#     if user_data:
+#         return jsonify({
+#             'status': 'success',
+#             'data': user_data
+#         })
+#     else:
+#         return jsonify({
+#             'status': 'error',
+#             'message': 'User not found or error retrieving data'
+#         }), 404
+
+# # New endpoint for testing - simulate payment without webhook
+# @app.route('/simulate-payment', methods=['POST'])
+# def simulate_payment():
+#     if "user_id" not in session: 
+#         return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
         
-    processor = PaymentProcessor()
+#     processor = PaymentProcessor()
     
-    # Get data from request or use defaults
-    data = request.get_json() or {}
-    reference = data.get('reference', 'test_ref_' + datetime.now().strftime('%Y%m%d%H%M%S'))
-    plan_type = data.get('plan_type', 'premium')
-    duration_months = int(data.get('duration_months', 1))
-    user_id = session['user_id']  # Use logged in user ID
-    amount = data.get('amount', 10000)  # Amount in Kobo (10000 = 100 KES)
+#     # Get data from request or use defaults
+#     data = request.get_json() or {}
+#     reference = data.get('reference', 'test_ref_' + datetime.now().strftime('%Y%m%d%H%M%S'))
+#     plan_type = data.get('plan_type', 'premium')
+#     duration_months = int(data.get('duration_months', 1))
+#     user_id = session['user_id']  # Use logged in user ID
+#     amount = data.get('amount', 10000)  # Amount in Kobo (10000 = 100 KES)
     
-    # Process payment immediately
-    success = processor.handle_successful_payment(
-        reference, plan_type, duration_months, user_id, amount
-    )
+#     # Process payment immediately
+#     success = processor.handle_successful_payment(
+#         reference, plan_type, duration_months, user_id, amount
+#     )
     
-    if success:
-        # Update session with new plan
-        session["plan"] = plan_type
+#     if success:
+#         # Update session with new plan
+#         session["plan"] = plan_type
         
-        # Refresh user data from database
-        user_data = processor.get_user_plan_info(user_id)
-        if user_data:
-            session["plan_details"] = user_data
+#         # Refresh user data from database
+#         user_data = processor.get_user_plan_info(user_id)
+#         if user_data:
+#             session["plan_details"] = user_data
         
-        return jsonify({
-            'status': 'success', 
-            'message': f'Payment simulated successfully for user {user_id}',
-            'reference': reference,
-            'plan': plan_type
-        }), 200
-    else:
-        return jsonify({
-            'status': 'error', 
-            'message': 'Failed to simulate payment'
-        }), 500
+#         return jsonify({
+#             'status': 'success', 
+#             'message': f'Payment simulated successfully for user {user_id}',
+#             'reference': reference,
+#             'plan': plan_type
+#         }), 200
+#     else:
+#         return jsonify({
+#             'status': 'error', 
+#             'message': 'Failed to simulate payment'
+#         }), 500
 
 # ---------------- DEBUG ROUTES ----------------
 @app.route('/debug/user/<int:user_id>')
@@ -734,18 +792,49 @@ def generate():
     })
 
 # ---------------- API: GET FLASHCARDS ----------------
+# @app.route('/api/flashcards')
+# def api_flashcards():
+#     if "user_id" not in session: 
+#         return jsonify({"error": "Not authenticated"}), 401
+#     conn = get_db_connection()
+#     if not conn:
+#         return jsonify({"error": "Database connection failed"}), 500
+#     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+#     cur.execute("SELECT * FROM flashcards WHERE user_id=%s ORDER BY created_at DESC",(session['user_id'],))
+#     cards = cur.fetchall()
+#     conn.close()
+#     return jsonify(cards)
+# ---------------- API: GET FLASHCARDS ----------------
 @app.route('/api/flashcards')
 def api_flashcards():
     if "user_id" not in session: 
         return jsonify({"error": "Not authenticated"}), 401
+    
     conn = get_db_connection()
     if not conn:
         return jsonify({"error": "Database connection failed"}), 500
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute("SELECT * FROM flashcards WHERE user_id=%s ORDER BY created_at DESC",(session['user_id'],))
-    cards = cur.fetchall()
-    conn.close()
-    return jsonify(cards)
+    
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute("SELECT * FROM flashcards WHERE user_id=%s ORDER BY created_at DESC", (session['user_id'],))
+        cards = cur.fetchall()
+        
+        # Convert to list of dictionaries (this makes it JSON serializable)
+        cards_list = [dict(card) for card in cards]
+        
+        # Convert datetime objects to strings
+        for card in cards_list:
+            if 'created_at' in card and card['created_at']:
+                card['created_at'] = card['created_at'].isoformat()
+        
+        return jsonify(cards_list)
+    
+    except psycopg2.Error as err:
+        logger.error(f"Database error in api_flashcards: {err}")
+        return jsonify({"error": "Database error occurred"}), 500
+    
+    finally:
+        conn.close()
 
 # ---------------- API: GET USER STATS ----------------
 @app.route('/api/user/stats')
