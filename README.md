@@ -53,8 +53,17 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
 
 ## Websites pictures
 
-
+### Landning page
 ![alt text](studym.png)
+
+### Dashboard Before subsciption to premium
+![alt text](Screenshot_20250831_145113.png)
+
+### Dashboard Affter subscription to premium
+![alt text](Screenshot_20250831_144823.png)
+
+### Demo - flashcard generation
+
 
 ## ⚙️ Installation  
 
