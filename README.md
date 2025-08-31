@@ -23,6 +23,7 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
 - **Database**: PostgreSQL  
 - **Payments**: [Paystack](https://paystack.com)  
 
+## Payment API are testing APIs not life. 
 ---
 ## Deployed Website
 
@@ -62,8 +63,8 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
 ### Dashboard Affter subscription to premium
 ![alt text](Screenshot_20250831_144823.png)
 
-### Demo - flashcard generation
-
+### Demo - Signup - Signin - Flashcard generation free / premium and account upgrade 
+<video controls src="Demo Video.mp4" title="Signup - Signin - Flashcard generation free / premium and account upgrade "></video>
 
 ## ⚙️ Installation  
 
