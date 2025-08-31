@@ -51,7 +51,10 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
  
 
 
+## Websites pictures
 
+
+![alt text](studym.png)
 
 ## ⚙️ Installation  
 
