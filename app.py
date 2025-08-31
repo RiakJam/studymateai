@@ -453,6 +453,12 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
+# ---------------- SERVE VIDEO ROUTE ----------------
+@app.route('/demo-video')
+def serve_demo_video():
+    # Serve the video file
+    return app.send_static_file('Demo Video.mp4')
+
 # ---------------- DASHBOARD ----------------
 @app.route('/dashboard')
 def dashboard():
