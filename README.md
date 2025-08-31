@@ -34,7 +34,8 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
 [Link](https://www.canva.com/design/DAGxoq9Coro/VGoQYJ03x6AZuZqDMuNuJg/edit?utm_content=DAGxoq9Coro&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ## AI Prompt
- Create the following pages. Use flask in the python file, postgress sql schema and remote render connection. The html pages page should use the following colors   
+ Create an AI website that generates flashcards and store the flashcards to the postgressql database.
+ Create the following pages. Use flask in the python file, postgress sql schema and remote render connection. The html pages page should use the following colors. 
   --primary: #ffce00;      
   --secondary: #6a5acd;    
   --accent: #00d4ff;       
@@ -49,6 +50,11 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
  premium.html - subscriptions using paystack
  login.html 
  signup.html
+
+ Create the postgressql schema. Database name hackerthone_db, tables flashcards and users. 
+ The flashcards table is for storing questions and answers and the user id
+ THe users table is to store user's info, plan (free, basic/premium)
+ 
  
 
 
