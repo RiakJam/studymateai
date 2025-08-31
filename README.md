@@ -61,8 +61,10 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
 ![alt text](Screenshot_20250831_144823.png)
 
 ### Demo - Signup - Signin - Flashcard generation free / premium and account upgrade 
-<video controls src="Demo Video.mp4" title="demo "></video>
-![alt text](Demo Video.mp4)
+
+[Video Link](https://www.canva.com/design/DAGxpDHhYqs/x1CcZ8LOXBarMD0w13ZbFg/edit?utm_content=DAGxpDHhYqs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+
 ## ⚙️ Installation  
 
 ### 1. Clone the repository  
