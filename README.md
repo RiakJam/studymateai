@@ -35,3 +35,4 @@ git clone https://github.com/yourusername/studymate-ai.git
 cd studymate-ai
 
 # studymateai
+# studymateai
