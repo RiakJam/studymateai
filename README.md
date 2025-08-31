@@ -64,7 +64,7 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
 ![alt text](Screenshot_20250831_144823.png)
 
 ### Demo - Signup - Signin - Flashcard generation free / premium and account upgrade 
-<video controls src="Demo Video.mp4" title="Signup - Signin - Flashcard generation free / premium and account upgrade "></video>
+<video controls src="Demo Video.mp4" title="demo "></video>
 
 ## ⚙️ Installation  
 
