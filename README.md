@@ -27,6 +27,9 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
 ---
 ## Deployed Website
 
+The website is deployed on render, under a free plan package. 
+NOTE: If the website is not accessed recently it sleeps and render will take some few seconds to start the website
+
 [Live](https://studymateai-1.onrender.com/)
 
 ## Pitch Deck Presentation link
@@ -54,7 +57,7 @@ It also integrates **Paystack payments** to handle subscriptions and premium acc
  Create the postgressql schema. Database name hackerthone_db, tables flashcards and users. 
  The flashcards table is for storing questions and answers and the user id
  THe users table is to store user's info, plan (free, basic/premium)
- 
+
  
 
 
